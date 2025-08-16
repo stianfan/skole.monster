@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplication Practice Game</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1 data-translate="app-title">🔢 Multiplication Practice</h1>
+                <button id="language-toggle" class="language-btn" title="Change Language">
+                    <span id="current-flag">🇬🇧</span>
+                    <span id="current-lang">EN</span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <div id="menu-screen" class="screen active">
+                <h2 data-translate="select-tables">Select Times Tables to Practice</h2>
+                <div class="table-selection">
+                    <div class="table-grid">
+                        <div class="table-option" data-table="1">
+                            <span data-translate="table-1">1x Table</span>
+                        </div>
+                        <div class="table-option" data-table="2">
+                            <span data-translate="table-2">2x Table</span>
+                        </div>
+                        <div class="table-option" data-table="3">
+                            <span data-translate="table-3">3x Table</span>
+                        </div>
+                        <div class="table-option" data-table="4">
+                            <span data-translate="table-4">4x Table</span>
+                        </div>
+                        <div class="table-option" data-table="5">
+                            <span data-translate="table-5">5x Table</span>
+                        </div>
+                        <div class="table-option" data-table="6">
+                            <span data-translate="table-6">6x Table</span>
+                        </div>
+                        <div class="table-option" data-table="7">
+                            <span data-translate="table-7">7x Table</span>
+                        </div>
+                        <div class="table-option" data-table="8">
+                            <span data-translate="table-8">8x Table</span>
+                        </div>
+                        <div class="table-option" data-table="9">
+                            <span data-translate="table-9">9x Table</span>
+                        </div>
+                        <div class="table-option" data-table="10">
+                            <span data-translate="table-10">10x Table</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="best-results">
+                    <h3 data-translate="best-results">🏆 Best Results by Times Table</h3>
+                    <div class="table-results" id="table-results">
+                        <!-- Best results for each table will be populated here -->
+                    </div>
+                </div>
+                <div class="game-options">
+                    <button id="start-custom" class="btn primary" data-translate="start-practice">Start Practice</button>
+                    <button id="start-master" class="btn secondary" data-translate="master-quiz">Master Quiz (All Tables)</button>
+                </div>
+            </div>
+
+            <div id="countdown-screen" class="screen">
+                <div class="countdown-container">
+                    <div class="countdown-title">
+                        <h2 id="countdown-table-title" data-translate="get-ready">Get Ready!</h2>
+                        <div class="table-display">
+                            <span id="countdown-table-name">2x Table</span>
+                        </div>
+                    </div>
+                    <div class="countdown-circle">
+                        <div class="countdown-number" id="countdown-number">3</div>
+                    </div>
+                    <div class="countdown-message">
+                        <span data-translate="starting-in">Starting in...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="game-screen" class="screen">
+                <div class="game-header">
+                    <div class="game-info">
+                        <span id="current-table" data-translate="current-table">Table: 2x</span>
+                        <span id="question-counter" data-translate="question-counter">Question 1 of 10</span>
+                    </div>
+                    <div class="game-stats">
+                        <span id="timer" data-translate="timer">Time: 00:00</span>
+                        <span id="score" data-translate="score">Score: 0/0</span>
+                    </div>
+                </div>
+                
+                <div class="question-area">
+                    <div class="question">
+                        <span id="question-text">7 × 8 = ?</span>
+                    </div>
+                    <input type="number" id="answer-input" placeholder="Your answer">
+                    <div class="question-controls">
+                        <button id="submit-answer" class="btn primary" data-translate="submit">Submit</button>
+                        <button id="skip-question" class="btn secondary" data-translate="skip">Skip</button>
+                    </div>
+                </div>
+
+                <div class="feedback" id="feedback"></div>
+                
+                <button id="quit-game" class="btn danger" data-translate="quit-game">Quit Game</button>
+            </div>
+
+            <div id="results-screen" class="screen">
+                <h2 data-translate="quiz-complete">Quiz Complete!</h2>
+                <div class="results-summary">
+                    <div class="result-stat">
+                        <h3 data-translate="time-taken">Time Taken</h3>
+                        <span id="final-time">02:45</span>
+                    </div>
+                    <div class="result-stat">
+                        <h3 data-translate="correct-answers">Correct Answers</h3>
+                        <span id="final-correct">8</span>
+                    </div>
+                    <div class="result-stat">
+                        <h3 data-translate="wrong-answers">Wrong Answers</h3>
+                        <span id="final-wrong">2</span>
+                    </div>
+                    <div class="result-stat">
+                        <h3 data-translate="accuracy">Accuracy</h3>
+                        <span id="final-accuracy">80%</span>
+                    </div>
+                </div>
+                <div class="results-actions">
+                    <button id="view-progress" class="btn primary" data-translate="view-progress">View Progress</button>
+                    <button id="play-again" class="btn secondary" data-translate="play-again">Play Again</button>
+                    <button id="back-to-menu" class="btn secondary" data-translate="back-to-menu">Back to Menu</button>
+                </div>
+            </div>
+
+            <div id="progress-screen" class="screen">
+                <h2 data-translate="your-progress">Your Progress</h2>
+                <div class="progress-controls">
+                    <select id="chart-type">
+                        <option value="accuracy" data-translate="accuracy-over-time">Accuracy Over Time</option>
+                        <option value="time" data-translate="time-per-quiz">Time Per Quiz</option>
+                        <option value="table-performance" data-translate="performance-by-table">Performance by Table</option>
+                    </select>
+                </div>
+                <div class="chart-container">
+                    <canvas id="progress-chart"></canvas>
+                </div>
+                <div class="progress-stats">
+                    <div class="stat-card">
+                        <h4 data-translate="total-quizzes">Total Quizzes</h4>
+                        <span id="total-quizzes">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h4 data-translate="average-accuracy">Average Accuracy</h4>
+                        <span id="avg-accuracy">0%</span>
+                    </div>
+                    <div class="stat-card">
+                        <h4 data-translate="best-time">Best Time</h4>
+                        <span id="best-time">--:--</span>
+                    </div>
+                </div>
+                <button id="back-from-progress" class="btn secondary" data-translate="back-to-menu">Back to Menu</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
