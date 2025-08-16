@@ -209,6 +209,48 @@ header h1 {
     padding: 1rem;
 }
 
+.master-quiz-section {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #32302f;
+    border-radius: 10px;
+    border: 1px solid #928374;
+    text-align: center;
+}
+
+.master-quiz-section h3 {
+    color: #fabd2f;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.master-score-display {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.master-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 120px;
+}
+
+.master-stat-label {
+    color: #a89984;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.master-stat-value {
+    color: #ebdbb2;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
 .game-options {
     display: flex;
     gap: 1rem;

@@ -15,6 +15,8 @@ class MultiplicationGame {
         this.initializeEventListeners();
         this.updateProgressStats();
         this.updateBestStats();
+        this.updateMasterQuizStats();
+        this.updateMasterQuizVisibility();
         this.updateLanguageDisplay();
         this.translatePage();
     }
@@ -34,6 +36,8 @@ class MultiplicationGame {
         document.getElementById('back-to-menu').addEventListener('click', () => {
             this.showScreen('menu-screen');
             this.updateBestStats();
+            this.updateMasterQuizStats();
+            this.updateMasterQuizVisibility();
         });
         document.getElementById('view-progress').addEventListener('click', () => this.showProgressScreen());
         document.getElementById('back-from-progress').addEventListener('click', () => this.showScreen('menu-screen'));
@@ -479,6 +483,8 @@ class MultiplicationGame {
         this.gameData.push(result);
         localStorage.setItem('multiplicationGameData', JSON.stringify(this.gameData));
         this.updateBestStats();
+        this.updateMasterQuizStats();
+        this.updateMasterQuizVisibility();
     }
 
     updateBestStats() {
@@ -569,6 +575,63 @@ class MultiplicationGame {
         tableResultsContainer.innerHTML = html;
     }
 
+    updateMasterQuizStats() {
+        // Find all master quiz games (games with all tables 1-10)
+        const masterQuizGames = this.gameData.filter(game => {
+            return game.tables && game.tables.length === 10 && 
+                   game.tables.every(table => table >= 1 && table <= 10) &&
+                   game.tables.sort().join(',') === '1,2,3,4,5,6,7,8,9,10';
+        });
+
+        if (masterQuizGames.length === 0) {
+            document.getElementById('master-best-time').textContent = '--:--';
+            document.getElementById('master-best-accuracy').textContent = '--%';
+            return;
+        }
+
+        // Find best time and accuracy
+        const bestTime = Math.min(...masterQuizGames.map(game => game.duration));
+        const bestAccuracy = Math.max(...masterQuizGames.map(game => game.accuracy));
+
+        const bestMinutes = Math.floor(bestTime / 60);
+        const bestSeconds = bestTime % 60;
+        const timeDisplay = `${bestMinutes.toString().padStart(2, '0')}:${bestSeconds.toString().padStart(2, '0')}`;
+
+        document.getElementById('master-best-time').textContent = timeDisplay;
+        document.getElementById('master-best-accuracy').textContent = `${Math.round(bestAccuracy)}%`;
+    }
+
+    areAllTablesCompleted() {
+        // Check if all tables 1-10 have been completed at least once
+        const completedTables = new Set();
+        
+        this.gameData.forEach(game => {
+            if (game.tables && Array.isArray(game.tables)) {
+                game.tables.forEach(table => {
+                    if (table >= 1 && table <= 10) {
+                        completedTables.add(table);
+                    }
+                });
+            }
+        });
+        
+        return completedTables.size === 10;
+    }
+
+    updateMasterQuizVisibility() {
+        const allTablesCompleted = this.areAllTablesCompleted();
+        const masterButton = document.getElementById('start-master');
+        const masterScoreSection = document.getElementById('master-quiz-score');
+        
+        if (allTablesCompleted) {
+            masterButton.style.display = 'block';
+            masterScoreSection.style.display = 'block';
+        } else {
+            masterButton.style.display = 'none';
+            masterScoreSection.style.display = 'none';
+        }
+    }
+
     loadGameData() {
         const data = localStorage.getItem('multiplicationGameData');
         return data ? JSON.parse(data) : [];
@@ -643,7 +706,10 @@ class MultiplicationGame {
                 'get-ready': 'Get Ready!',
                 'starting-in': 'Starting in...',
                 'go': 'GO!',
-                'table': 'Table'
+                'table': 'Table',
+                'master-quiz-best': '🏆 Master Quiz Best Result',
+                'best-time': 'Best Time:',
+                'best-accuracy': 'Best Accuracy:'
             },
             'no': {
                 'app-title': '🔢 Gangetabell-øving',
@@ -700,13 +766,16 @@ class MultiplicationGame {
                 'get-ready': 'Gjør deg klar!',
                 'starting-in': 'Starter om...',
                 'go': 'KJØR!',
-                'table': 'gangen'
+                'table': 'gangen',
+                'master-quiz-best': '🏆 Mesterquiz beste resultat',
+                'best-time': 'Beste tid:',
+                'best-accuracy': 'Beste nøyaktighet:'
             }
         };
     }
 
     loadLanguage() {
-        return localStorage.getItem('multiplicationGameLanguage') || 'en';
+        return localStorage.getItem('multiplicationGameLanguage') || 'no';
     }
 
     saveLanguage() {
@@ -719,6 +788,7 @@ class MultiplicationGame {
         this.updateLanguageDisplay();
         this.translatePage();
         this.updateBestStats();
+        this.updateMasterQuizStats();
         this.updateChart();
     }
 
