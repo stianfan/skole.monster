@@ -578,9 +578,11 @@ class MultiplicationGame {
     updateMasterQuizStats() {
         // Find all master quiz games (games with all tables 1-10)
         const masterQuizGames = this.gameData.filter(game => {
-            return game.tables && game.tables.length === 10 && 
-                   game.tables.every(table => table >= 1 && table <= 10) &&
-                   game.tables.sort().join(',') === '1,2,3,4,5,6,7,8,9,10';
+            if (!game.tables || game.tables.length !== 10) return false;
+            
+            // Check if it contains all tables 1-10
+            const sortedTables = [...game.tables].sort((a, b) => a - b);
+            return sortedTables.join(',') === '1,2,3,4,5,6,7,8,9,10';
         });
 
         if (masterQuizGames.length === 0) {
